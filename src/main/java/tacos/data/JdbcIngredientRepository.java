@@ -3,7 +3,6 @@ package tacos.data;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -19,7 +18,6 @@ public class JdbcIngredientRepository implements IngredientRepository{
     findByIdSql = findAllSql + " where id=?",
     saveSql = "insert into Ingredient (id, name, type) values (?, ?, ?)";
 
-    @Autowired
     public JdbcIngredientRepository(JdbcTemplate jdbc) {
         this.jdbc = jdbc;
     }
