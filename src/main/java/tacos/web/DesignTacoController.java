@@ -28,14 +28,14 @@ import tacos.data.TacoRepository;
 public class DesignTacoController {
 
     private final IngredientRepository ingredientRepo;
-    private TacoRepository designRepo;
+    private TacoRepository tacoRepo;
 
     public DesignTacoController(
         IngredientRepository ingredientRepo, 
-        TacoRepository designRepo
+        TacoRepository tacoRepo
     ) {
         this.ingredientRepo = ingredientRepo;
-        this.designRepo = designRepo;
+        this.tacoRepo = tacoRepo;
     }
 
     @ModelAttribute(name = "order")
@@ -43,7 +43,7 @@ public class DesignTacoController {
         return new Order();
     }
 
-    @ModelAttribute(name = "taco")
+    @ModelAttribute(name = "design")
     public Taco taco() {
         return new Taco();
     }
@@ -74,7 +74,7 @@ public class DesignTacoController {
             return "design";
         }
         
-        Taco saved = designRepo.save(design);
+        Taco saved = tacoRepo.save(design);
         order.addDesign(saved);
         
         return "redirect:/orders/current";
