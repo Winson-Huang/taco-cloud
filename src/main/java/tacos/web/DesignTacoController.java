@@ -1,11 +1,13 @@
 package tacos.web;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -19,8 +21,10 @@ import tacos.Ingredient;
 import tacos.Ingredient.Type;
 import tacos.Order;
 import tacos.Taco;
+import tacos.User;
 import tacos.data.IngredientRepository;
 import tacos.data.TacoRepository;
+import tacos.data.UserRepository;
 
 @Controller
 @RequestMapping("/design")
@@ -29,13 +33,16 @@ public class DesignTacoController {
 
     private final IngredientRepository ingredientRepo;
     private TacoRepository tacoRepo;
+    private UserRepository userRepo;
 
     public DesignTacoController(
         IngredientRepository ingredientRepo, 
-        TacoRepository tacoRepo
+        TacoRepository tacoRepo,
+        UserRepository userRepo
     ) {
         this.ingredientRepo = ingredientRepo;
         this.tacoRepo = tacoRepo;
+        this.userRepo = userRepo;
     }
 
     @ModelAttribute(name = "order")
@@ -49,7 +56,11 @@ public class DesignTacoController {
     }
     
     @GetMapping
-    public String showDesignForm(Model model) {
+    public String showDesignForm(
+        Model model,
+        Principal principal
+        // @AuthenticationPrincipal User user
+    ) {
         List<Ingredient> ingredients = new ArrayList<>();
         ingredientRepo.findAll().forEach(item -> ingredients.add(item));
 
@@ -61,12 +72,18 @@ public class DesignTacoController {
             );
         }
 
+        // If use @AuthenticationPrincipal, compile will success and app feature
+        // is fine. But (stupid) unit test will fail because @WithMockUser cannot
+        // mock a complete user with fullname field.
+        User user = userRepo.findByUsername(principal.getName());
+        model.addAttribute("user", user);
+
         return "design";
     }
     
     @PostMapping
     public String processDesign(
-        @Valid Taco design,
+        @Valid Taco taco,
         Errors errors,
         @ModelAttribute Order order 
     ) {
@@ -74,7 +91,7 @@ public class DesignTacoController {
             return "design";
         }
         
-        Taco saved = tacoRepo.save(design);
+        Taco saved = tacoRepo.save(taco);
         order.addDesign(saved);
         
         return "redirect:/orders/current";
