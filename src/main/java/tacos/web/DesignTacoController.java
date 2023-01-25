@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+// import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -51,7 +51,7 @@ public class DesignTacoController {
     }
 
     @ModelAttribute(name = "design")
-    public Taco taco() {
+    public Taco design() {
         return new Taco();
     }
     

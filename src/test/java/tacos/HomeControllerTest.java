@@ -15,10 +15,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import tacos.data.IngredientRepository;
-import tacos.data.OrderRepository;
 import tacos.data.TacoRepository;
 import tacos.data.UserRepository;
+import tacos.web.OrderProps;
+import tacos.data.IngredientRepository;
+import tacos.data.OrderRepository;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(secure=false)
@@ -30,7 +31,7 @@ public class HomeControllerTest {
   // Note: Most of these mocks are here to avoid autowiring issues. They aren't
   //       actually used in the course of the home page test, so their behavior
   //       isn't important. They just need to exist so autowiring can take place.
-
+  
   @MockBean
   private IngredientRepository ingredientRepository;
 
@@ -45,10 +46,16 @@ public class HomeControllerTest {
   
   @MockBean
   private PasswordEncoder passwordEncoder;
+  
+  @MockBean
+  private DiscountCodeProps discountProps;
+
+  @MockBean
+  private OrderProps orderProps;
 
   @Test
   public void testHomePage() throws Exception {
-    mockMvc.perform(get("/abc"))
+    mockMvc.perform(get("/"))
       .andExpect(status().isOk())
       .andExpect(view().name("home"))
       .andExpect(content().string(
